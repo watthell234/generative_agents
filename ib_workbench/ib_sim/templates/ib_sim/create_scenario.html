@@ -1,0 +1,75 @@
+{% extends 'ib_sim/base.html' %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="bg-white shadow sm:rounded-lg overflow-hidden">
+        <div class="px-4 py-5 sm:px-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Create New Scenario</h3>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">Define the client and the idea you want to test.</p>
+        </div>
+        <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+            <form method="post" class="space-y-6 p-6">
+                {% csrf_token %}
+
+                <div>
+                    <label for="client_persona" class="block text-sm font-medium text-gray-700">Client Persona</label>
+                    <div class="mt-1">
+                        <textarea id="client_persona" name="client_persona" rows="4"
+                            class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                            placeholder="e.g., You are the CEO of a Series D robotics company. You are ambitious but cautious about debt..."></textarea>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-500">Describe the client's role, personality, and current business
+                        situation.</p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                    <div class="sm:col-span-2">
+                        <label for="client_industry" class="block text-sm font-medium text-gray-700">Industry</label>
+                        <div class="mt-1">
+                            <input type="text" name="client_industry" id="client_industry"
+                                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                placeholder="e.g. Robotics">
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label for="financial_context"
+                            class="block text-sm font-medium text-gray-700">Financials</label>
+                        <div class="mt-1">
+                            <input type="text" name="financial_context" id="financial_context"
+                                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                placeholder="e.g. $50M Rev, High burn">
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label for="market_conditions" class="block text-sm font-medium text-gray-700">Market</label>
+                        <div class="mt-1">
+                            <input type="text" name="market_conditions" id="market_conditions"
+                                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                placeholder="e.g. High Interest Rates">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="banker_idea" class="block text-sm font-medium text-gray-700">Banker's Idea</label>
+                    <div class="mt-1">
+                        <textarea id="banker_idea" name="banker_idea" rows="3"
+                            class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                            placeholder="e.g., Propose a warehouse credit facility to scale robot production..."></textarea>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-500">What idea or product do you want to pitch?</p>
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="submit"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Create Simulation
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

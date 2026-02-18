@@ -23,11 +23,5 @@
 
 from .base import *
 
-try: 
-  from .local import *
-  live = False
-except:
-  live = True
+from frontend_server.settings.local_new import *
 
-if live:
-  from .production import *

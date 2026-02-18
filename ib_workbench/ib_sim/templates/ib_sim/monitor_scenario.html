@@ -1,0 +1,132 @@
+{% extends 'ib_sim/base.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{ status: '{{ scenario.status }}' }">
+    <div class="md:flex md:items-center md:justify-between mb-8">
+        <div class="flex-1 min-w-0">
+            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">Scenario #{{ scenario.id }}
+            </h2>
+            <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
+                <div class="mt-2 flex items-center text-sm text-gray-500">
+                    <span class="mr-2 font-medium">Status:</span>
+                    <span id="status-badge"
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        {{ scenario.status }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 flex md:mt-0 md:ml-4">
+            <button id="start-btn" onclick="startSimulation()"
+                class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 {% if scenario.status != 'CREATED' %}hidden{% endif %}">
+                Start Simulation
+            </button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <!-- Context Card -->
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:px-6 bg-gray-50">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Context</h3>
+            </div>
+            <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+                <dl class="sm:divide-y sm:divide-gray-200">
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">Client Persona</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ scenario.client_persona }}</dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">Context</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-2">
+                                {{ scenario.client_industry }}
+                            </span>
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 mr-2">
+                                {{ scenario.financial_context }}
+                            </span>
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                {{ scenario.market_conditions }}
+                            </span>
+                        </dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">Banker's Idea</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ scenario.banker_idea }}</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+        <!-- Simulation Log -->
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:px-6 bg-gray-50">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Simulation Log</h3>
+            </div>
+            <div class="border-t border-gray-200 h-96 overflow-y-auto p-4 bg-gray-50" id="chat-log">
+                <!-- Chat items will be populated here -->
+                <div class="text-center text-gray-500 mt-10">Simulation not started yet...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const scenarioId = {{ scenario.id }};
+
+    function startSimulation() {
+        fetch(`/ib/api/start/${scenarioId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'started') {
+                    document.getElementById('start-btn').classList.add('hidden');
+                    document.getElementById('status-badge').textContent = 'RUNNING';
+                    pollStatus();
+                }
+            });
+    }
+
+    function pollStatus() {
+        const interval = setInterval(() => {
+            fetch(`/ib/api/status/${scenarioId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    updateChatLog(data.logs);
+                    document.getElementById('status-badge').textContent = data.status;
+
+                    if (data.status === 'COMPLETED' || data.status === 'FAILED') {
+                        clearInterval(interval);
+                    }
+                });
+        }, 2000);
+    }
+
+    function updateChatLog(logs) {
+        const container = document.getElementById('chat-log');
+        if (logs.length === 0) return;
+
+        container.innerHTML = logs.map(log => `
+            <div class="mb-4 ${log.agent === 'Banker' ? 'text-right' : 'text-left'}">
+                <div class="inline-block max-w-xs sm:max-w-md px-4 py-2 rounded-lg ${log.agent === 'Banker' ? 'bg-indigo-100 text-indigo-900' : 'bg-white border border-gray-200 text-gray-900'}">
+                    <p class="text-xs font-semibold mb-1">${log.agent}</p>
+                    <p class="text-sm">${log.message}</p>
+                </div>
+            </div>
+        `).join('');
+        container.scrollTop = container.scrollHeight;
+    }
+
+    // Start polling automatically if already running/completed
+    if ('{{ scenario.status }}' !== 'CREATED') {
+        pollStatus();
+    }
+</script>
+{% endblock %}
