@@ -1,6 +1,10 @@
 # IB Workbench
 
+
 This is a standalone Django application for running Investment Banking scenarios using the Generative Agents backlog.
+
+![Investment Banking Workbench Simulation Environment](assets/ib_simulation.png)
+
 
 ## Setup
 
