@@ -18,5 +18,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # New generic simulation framework — all domains live under /sim/
+    path('sim/', include('sim_core.urls')),
+    # Legacy IB-only routes kept for backwards-compat
     path('ib/', include('ib_sim.urls')),
 ]

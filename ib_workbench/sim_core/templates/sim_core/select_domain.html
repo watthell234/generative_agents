@@ -1,0 +1,46 @@
+{% extends 'sim_core/base.html' %}
+{% block title %}Choose a Simulation Domain{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4">
+    <div class="text-center mb-10">
+        <h1 class="text-3xl font-bold text-gray-900">Simulation Framework</h1>
+        <p class="mt-2 text-gray-500">Choose a domain to create a new simulation scenario.</p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        {% for domain in domains %}
+        <a href="{% url 'create_scenario' domain.slug %}"
+           class="group bg-white shadow rounded-lg p-6 border border-gray-200 hover:border-indigo-400 hover:shadow-md transition">
+            <div class="flex items-start justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-900 group-hover:text-indigo-600">
+                        {{ domain.label }}
+                    </h2>
+                    <p class="mt-2 text-sm text-gray-500">{{ domain.description }}</p>
+                </div>
+                <svg class="h-5 w-5 text-gray-400 group-hover:text-indigo-500 mt-1 shrink-0"
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 5l7 7-7 7"/>
+                </svg>
+            </div>
+            <div class="mt-4 flex gap-2 flex-wrap">
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-50 text-indigo-700">
+                    {{ domain.persuader_role }}
+                </span>
+                <span class="text-xs text-gray-400 self-center">→</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-50 text-green-700">
+                    {{ domain.target_role }}
+                </span>
+            </div>
+        </a>
+        {% empty %}
+        <div class="col-span-2 text-center text-gray-500 py-12">
+            No domains registered. Add domain apps to INSTALLED_APPS and run
+            <code class="text-indigo-600">python manage.py bootstrap_domains</code>.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

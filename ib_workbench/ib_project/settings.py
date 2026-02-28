@@ -37,6 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Generic simulation engine — must come before domain apps
+    'sim_core.apps.SimCoreConfig',
+    # Domain apps — each registers itself with sim_core's DOMAIN_REGISTRY on startup
+    'ib_domain.apps.IBDomainConfig',
+    'pharma_domain.apps.PharmaDomainConfig',
+    # Legacy IB app — kept for backwards-compat; routes replaced by sim_core
     'ib_sim',
 ]
 
