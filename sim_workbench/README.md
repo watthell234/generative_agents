@@ -1,9 +1,9 @@
-# IB Workbench
+# Sim Workbench
 
 
-This is a standalone Django application for running Investment Banking scenarios using the Generative Agents backlog.
+This is a standalone Django application for running multi-domain persuasion simulations (Investment Banking, Pharma Consulting, and more) using the Generative Agents framework.
 
-![Investment Banking Workbench Simulation Environment](assets/ib_simulation.png)
+![Sim Workbench Simulation Environment](assets/ib_simulation.png)
 
 
 ## Setup
@@ -19,7 +19,7 @@ This is a standalone Django application for running Investment Banking scenarios
 
 1.  Navigate to this directory:
     ```bash
-    cd ib_workbench
+    cd sim_workbench
     ```
 2.  Run migrations (if not already done):
     ```bash
