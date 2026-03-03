@@ -48,8 +48,8 @@ INSTALLED_APPS = [
 
 import sys
 # Add reverie and environment paths to sys.path
-# BASE_DIR is .../ib_workbench
-# reverie is .../reverie (sibling of ib_workbench)
+# BASE_DIR is .../sim_workbench
+# reverie is .../reverie (sibling of sim_workbench)
 REVERIE_PATH = os.path.join(BASE_DIR, '../reverie')
 ENV_PATH = os.path.join(BASE_DIR, '../environment')
 sys.path.append(REVERIE_PATH)
